@@ -20,7 +20,8 @@ exports.addProduct = async (req, res) => {
 }
 //get all products
 exports.getAllProduct = async (req, res) => {
-    let productToGet = await Product.find().select(['product_name', 'product_price']).populate('category', 'category_name')
+    // let productToGet = await Product.find().select(['product_name', 'product_price']).populate('category', 'category_name')
+    let productToGet = await Product.find().populate('category', 'category_name')
     if (productToGet) {
         res.send(productToGet)
     }
@@ -50,25 +51,36 @@ exports.getProductByCategory = async (req, res) => {
     }
 
 }
-//update product
+// to update product
 exports.updateProduct = async (req, res) => {
-    let product = await Product.findByIdAndUpdate(req.params.id,
+    console.log(req.body)
+    let productToUpdate = await Product.findByIdAndUpdate(
+        req.params.id,
+        req.file?
         {
             product_name: req.body.product_name,
             product_price: req.body.product_price,
             product_description: req.body.product_description,
-            product_image: req.body.product_image,
-            category: req.file.path,
-            rating: req.body.rating,
+            product_image: req.file.path,
+            category: req.body.category,
             count_in_stock: req.body.count_in_stock,
             rating: req.body.rating
-
-        }, { new: true })
-    if (product) {
-        res.send(product)
+        }:{
+            product_name: req.body.product_name,
+            product_price: req.body.product_price,
+            product_description: req.body.product_description,
+            // product_image: req.file.path,
+            category: req.body.category,
+            count_in_stock: req.body.count_in_stock,
+            rating: req.body.rating
+        },
+        {new: true}
+    )
+    if(!productToUpdate){
+        return res.status(400).json({error:"Something went wrong"})
     }
-    else {
-        return res.status(400).json({ error: "something went wrong" })
+    else{
+        res.send(productToUpdate)
     }
 }
 //delete product by  category
@@ -80,4 +92,44 @@ exports.deleteProductByCategory = async (req, res) => {
     else {
         return res.status(400).json({ error: "something went wrong" })
     }
+}
+//delete product by id
+exports.deleteProduct = async (req, res) => {
+    let product = await Product.findByIdAndDelete(req.params.id )
+    if (product) {
+        return res.status(200).json({ message: "product deleted successfullly" })
+    }
+    else {
+        return res.status(400).json({ error: "something went wrong" })
+    }
+}
+//get filtered products
+exports.filterProduct = async(req,res)=>{
+    let sortBy =req.query.sortBy? req.query.sortBy : 'created_at'
+    let order =req.query.order? req.query.order:'ASC'
+    let limit = req.query.limit? req.query.limit: 999999999
+    let skip = req.query.skip? req.query.skip: 0
+
+    let Args = {}
+    for (let key in req.body.filters){
+        if(req.body.filters[key].length>0){
+            if(key=="category"){
+                Args[key] = req.body.filters[key]
+            }
+            else {
+                Args[key]={
+                    $gte:req.body.filters[key][0],
+                    $lte:req.body.filters[key][1]
+                }
+            }
+        }
+    }
+    console.log(req.body.filters)
+    let filteredProduct = await Product.find(Args).populate('category').sort([[sortBy, order]])
+    .limit(limit)
+    .skip(skip)
+    if(!filteredProduct){
+        return res.status(400).json({error:"something went wrong"})
+    }
+    res.send(filteredProduct)
 }

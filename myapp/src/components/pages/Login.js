@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
 import Navbar from '../layouts/Navbar'
 import Footer from '../layouts/Footer'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { authenticte, login } from '../../api/userApi'
+import { Link, useNavigate } from 'react-router-dom'
+import { authenticte, isAuthenticated, login } from '../../api/userApi'
 
 const Login = () => {
   const navigate = useNavigate()
-  
+  const user_info = isAuthenticated()
   const [user,setUser] =useState({
     email:'',
     password:'',
     error:'',
-    success:''
+    success:false
   })
   const {email,password,error,success} = user
-  const handleClick= e=>{
+  const handleClick= e =>{
     e.preventDefault()
     login(user)
     .then(data=>{
@@ -34,7 +34,13 @@ const Login = () => {
   }
   const redirect=()=>{
     if(success){
-      navigate('/')
+      if(user_info && user_info.user.role===1){
+        navigate('/admin/dashboard')
+      }
+      else{
+        navigate('/')
+      }
+     
     }
   }
   return (
@@ -50,12 +56,12 @@ const Login = () => {
     <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
 
     <div className="form-floating">
-      <input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" onChange={e=>setUser({...user,email:e.target.value})}/>
-      <label htmlFor="floatingInput">Email address</label>
+      <input type="email" className="form-control" id="email" placeholder="name@example.com" onChange={e=>setUser({...user,email:e.target.value})}/>
+      <label htmlFor="email">Email address</label>
     </div>
     <div className="form-floating">
-      <input type="password" className="form-control" id="floatingPassword" placeholder="Password" onChange={e=>setUser({...user,password:e.target.value})}/>
-      <label htmlFor="floatingPassword">Password</label>
+      <input type="password" className="form-control" id="password" placeholder="Password" onChange={e=>setUser({...user,password:e.target.value})}/>
+      <label htmlFor="password">Password</label>
     </div>
 
     <div className="checkbox mb-3">
@@ -64,7 +70,14 @@ const Login = () => {
       </label>
     </div>
     <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={handleClick}>Sign in</button>
-    Do not have an account?<Link to="/register" >Register</Link>
+    <div className='d-flex justify-content-between'>
+      <div>
+      Do not have an account?<Link to="/register" >Register</Link>
+      </div>
+      <div>
+        <Link to="/forgetpassword">forget Password</Link>
+      </div>
+    </div>
   </form>
 </main>
 

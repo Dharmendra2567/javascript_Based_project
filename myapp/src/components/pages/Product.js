@@ -1,115 +1,67 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { getAllProducts, getFilteredProducts } from '../../api/productApi'
+import CategoriesCheckbox from '../CategoriesCheckbox'
 import Footer from '../layouts/Footer'
 import Navbar from '../layouts/Navbar'
+import PriceRadio from '../PriceRadio'
+import ProductCard from './ProductCard'
 
 const Product = () => {
+    let [products, setProducts] = useState([])
+    let [sortBy, setSortBy] = useState('product_name')
+    let [order, setOrder] = useState('DESC')
+    let [limit, setLimit] =useState(2)
+    let [skip , setSkip]  = useState(0)
+    const [myFilters, setMyFilters] = useState({
+        filters: { category: [], product_price: [] }
+    })
+
+    const handleFilters = (filter, filterBy) => {
+        let new_filters = {...myFilters }
+        new_filters.filters[filterBy] = filter
+        setMyFilters(new_filters)
+        console.log(new_filters)
+
+    }
+    useEffect(() => {
+
+        getFilteredProducts(myFilters,sortBy, order,limit,skip)
+            .then(data => {
+                if (data.error) {
+                    console.log(data.error)
+                }
+                else {
+                    // new_products.push(data)
+                    setProducts([...products, ...data])
+                    // setProducts(data)
+                    console.log(data)
+                }
+            })
+    }, [myFilters,skip])
     return (
         <>
-
             <Navbar />
             <div className='container-fluid'>
                 <div className='row'>
                     <div className='col-md-3 ps-5'>
                         <h3 className='text-decoration-underline text-success mt-3 '>Department</h3>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                            <label class="form-check-label" htmlFor="flexCheckDefault1">
-                                Mobile
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                            <label class="form-check-label" htmlFor="flexCheckDefault2">
-                                Laptop
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                            <label class="form-check-label" htmlFor="flexCheckDefault2">
-                                Kithen
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                            <label class="form-check-label" htmlFor="flexCheckDefault2">
-                                Electronics
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                            <label class="form-check-label" htmlFor="flexCheckDefault2">
-                                Accessories
-                            </label>
-
-                        </div>
+                        <CategoriesCheckbox handleCategory={handleFilters} />
                         <h3 className='text-decoration-underline text-success mt-3 '>Prices</h3>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked />
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                Above Rs.20000
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked />
-                            <label class="form-check-label" for="flexRadioDefault2">
-                                Rs.20,000-Rs.50,000
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked />
-                            <label class="form-check-label" for="flexRadioDefault3">
-                                Above Rs.50,000-Rs.80,000
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked />
-                            <label class="form-check-label" for="flexRadioDefault4">
-                                Above Rs.80,000-Rs. 1,20,000
-                            </label>
-                        </div>
-
+                        <PriceRadio handlePrice={handleFilters} />
                     </div>
                     <div className='col-md-9' >
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2">
-                            <div class="col">
-                                <div class="card">
-                                    <img src="logo192.png" class="card-img-top" alt="..." />
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        <p class="card-text text-truncate">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="logo192.png" class="card-img-top" alt="..." />
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        <p class="card-text text-truncate">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="logo192.png" class="card-img-top" alt="..." />
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        <p class="card-text text-truncate">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <img src="logo192.png" class="card-img-top" alt="..." />
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        <p class="card-text text-truncate">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2">
+                            {
+                                products.map(item => {
+                                    return <ProductCard item={item} key={item._id} />
+                                })
+                            }
                         </div>
+                        <button className='btn btn-primary' onClick={()=>{
+                            return setSkip(skip+limit)
+                        }}>Load More</button>
                     </div>
+
                 </div>
             </div>
             <Footer />

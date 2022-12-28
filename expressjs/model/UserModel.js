@@ -39,12 +39,12 @@ UserSchema.virtual("password")
 //methods
 UserSchema.methods = {
     encryptPassword: function (password) {
-        if (password == "null") {
+        if (password == null) {
             return ""
         }
         try {
             return this.hashed_password = crypto.createHmac('sha256', this.salt).update
-                ('password').digest('hex')
+                (password).digest('hex')
         }
         catch {
             return ""

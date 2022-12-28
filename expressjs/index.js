@@ -27,7 +27,7 @@ app.use(cookieParser())
 app.use(TestRouter)
 app.use('/api', CategoryRouter)
 app.use('/api',productRouter)
-app.use('/public/uploads',express.static('public/uploads'))
+app.use('/api/public/uploads',express.static('public/uploads'))
 app.use('/api',userRouter)
 app.use('/api',orderRouter)
 

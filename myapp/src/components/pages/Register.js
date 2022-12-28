@@ -61,21 +61,21 @@ const Register = () => {
                     </div>
                     <div className='form-floating'>
                         <div className='form-control d-flex justify-content-evenly'>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="gender" id="male" />
-                                <label class="form-check-label" htmlFor="male">
+                            <div className="form-check">
+                                <input className="form-check-input" type="radio" name="gender" id="male" />
+                                <label className="form-check-label" htmlFor="male">
                                   male
                                 </label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="gender" id="female" />
-                                <label class="form-check-label" htmlFor="female">
+                            <div className="form-check">
+                                <input className="form-check-input" type="radio" name="gender" id="female" />
+                                <label className="form-check-label" htmlFor="female">
                                   Female
                                 </label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="gender" id="others" />
-                                <label class="form-check-label" htmlFor="others">
+                            <div className="form-check">
+                                <input className="form-check-input" type="radio" name="gender" id="others" />
+                                <label className="form-check-label" htmlFor="others">
                                   Others
                                 </label>
                             </div>

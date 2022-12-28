@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link,  useNavigate } from 'react-router-dom'
 import { isAuthenticated, signOut } from '../../api/userApi'
 
 const Navbar = () => {
@@ -16,23 +16,23 @@ const Navbar = () => {
         console.log(data.error)
       }
       else{
-        Navigate('/login')
+        navigate('/login')
       }
     })
   }
   return (
     <>
-    <div class="row custom-background">
-        <div class="col-md-3 text-center fw-bold tx-dark fs-3">
+    <div className="row custom-background">
+        <div className="col-md-3 text-center fw-bold tx-dark fs-3">
         <Link className="navbar-brand" to="/">Oue Store</Link>
         </div>
-        <div class="col-md-6 mt-1">
+        <div className="col-md-6 mt-1">
         <form className="d-flex" role="search">
         <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
         <button className="btn btn-outline-success" type="submit">Search</button>
       </form>
         </div>
-        <div class="col-md-3 fs-3 d-flex justify-content-evenly">
+        <div className="col-md-3 fs-3 d-flex justify-content-evenly">
          {!user &&
           <>
           <Link to="/login"><i className="bi bi-box-arrow-in-right"></i></Link>
@@ -40,14 +40,20 @@ const Navbar = () => {
           </>
         }
        
-        {user &&
-          <i className="bi bi-box-arrow-right text-success"onClick={handleSignout} role="button"></i>
-        }
+        
         {user &&user.role===1&&
-        <Link to="/dashboard"><i className="bi bi-speedometer"></i></Link>
+        <Link to="/admin/dashboard"><i className="bi bi-speedometer"></i></Link>
         }
         {user && user.role===0 &&
+        <>
          <Link to="/cart"><i className="bi bi-cart"></i></Link>
+         <Link to="/userprofile"><i className="bi bi-person-circle"></i></Link>
+         </>
+        
+         
+        }
+        {user &&
+         <i className="bi bi-box-arrow-in-left text-primary" onClick={handleSignout} role="button"></i>
         }
         </div>
     </div>

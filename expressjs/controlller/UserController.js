@@ -10,7 +10,7 @@ exports.addUser = async (req, res) => {
     let user = await User.findOne({ email: req.body.email })
     if (user) {
         return res.status(400).json({ error: "user already exist .Create new one or login with different email" })
-    }
+    } 
     //create email or user
     let userToadd = new User({
         username: req.body.username,
@@ -68,7 +68,7 @@ exports.resendVerification=async (req,res)=>{
     }
     //send token in email
     // const url = `http://localhost:5000/api/confirm/${token.token}`
-    const url = `process.env.FRONTEND_URL/confirm/${token.token}`
+    const url = `${process.env.FRONTEND_URL}/confirm/${token.token}`
     sendEmail({
         from: "noreply@example.com",
         to: req.body.email,
@@ -121,7 +121,7 @@ exports.forgetPassword = async (req, res) => {
     }
     //send token in email
     // const url = `http://localhost:5000/api/resetpassword/${token.token}`
-    const url = `process.env.FRONTEND_URL/confirm/${token.token}`
+    const url = `${process.env.FRONTEND_URL}/resetpassword/${token.token}`
     sendEmail({
         from: "noreply@example.com",
         to: req.body.email,
@@ -129,7 +129,7 @@ exports.forgetPassword = async (req, res) => {
         text: "click to the following link to reset your password." + url,
         html: `<a href='${url}'><button>Reset Password</button></a>`
     })
-    return res.status(200).json({ error: "password reset link has  been send in your email" })
+    return res.status(200).json({ message: "password reset link has  been send in your email" })
 
 }
 //reset password
@@ -151,14 +151,14 @@ exports.resetPassword = async (req, res) => {
     if (!user) {
         return res.status(400).json({ error: "something went wrong" })
     }
-    return res.status(400).json({ message: "password changed successfully" })
+    return res.status(200).json({ message: "password changed successfully" })
 }
 
 //signin
 exports.signin = async (req, res) => {
     const { email, password } = req.body
     //check user
-    const user = await User.findOne({ email: email })
+    let user = await User.findOne({ email: email })
     if (!user) {
         return res.status(400).json({ error: "user not found" })
     }
@@ -171,7 +171,7 @@ exports.signin = async (req, res) => {
         return res.status(400).json({ error: "user is not verified.Login to continue" })
     }
     //create login token
-    let token = jwt.sign({ user: user.id, role: user.role }, process.env.JWT_SECRET)
+    let token = jwt.sign({ user: user._id, role: user.role }, process.env.JWT_SECRET)
     //set cookies
     res.cookie('myCookie', token, { expire: Date.now() + 86400 })
     //provide information to user
@@ -211,7 +211,7 @@ exports.findUser= async (req,res)=>{
     return res.send(user)
     
 }
-//list of all user
+// get list of all user
 exports.listofUsers=async (req,res)=>{
     let users= await User.find()
     if(!users){
